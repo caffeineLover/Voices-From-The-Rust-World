@@ -255,8 +255,8 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
     private static void AfterBookHeldInteractStart(
         ItemSlot slot,
         EntityAgent byEntity,
-        BlockSelection blockSel,
-        EntitySelection entitySel,
+        BlockSelection _blockSel,
+        EntitySelection _entitySel,
         bool firstEvent,
         ref EnumHandHandling handling
     )
