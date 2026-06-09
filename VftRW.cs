@@ -144,11 +144,19 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         api.StoreModConfig(clientConfig, ClientConfigFileName);
     }
 
+
+
+
+
     private void SanitizeClientConfig()
     {
         clientConfig.NarrationVolume = SanitizeVolume(clientConfig.NarrationVolume, DefaultNarrationVolume);
         clientConfig.OtherSoundDuckingPercent = SanitizePercent(clientConfig.OtherSoundDuckingPercent, DefaultDuckingPercent);
     }
+
+ 
+
+
 
     private void TryRegisterConfigLib(ICoreClientAPI api)
     {
@@ -180,15 +188,14 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
 
             registerMethod.Invoke(
                 configLib,
-                new object[]
-                {
+                [
                     "voicesfromtherustworld",
                     clientConfig,
                     ConfigLibConfigFileName,
                     (Action)(() => OnExternalConfigChanged(api)),
                     (Action<string>)(_ => OnExternalConfigChanged(api)),
                     (Action)(() => OnExternalConfigChanged(api))
-                }
+                ]
             );
 
             OnExternalConfigChanged(api);
