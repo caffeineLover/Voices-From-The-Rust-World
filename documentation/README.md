@@ -14,6 +14,7 @@ In game, run:
 
 ```text
 .vfrw whinging
+.vfrw stop
 ```
 
 To list discovered narrator packs, run:
@@ -26,10 +27,71 @@ To check or adjust narration loudness, run:
 
 ```text
 .vfrw volume
-.vfrw volume 1.5
+.vfrw volume 2.5
 ```
 
+Narration volume is a multiplier capped at `8.0`.
+
+Matching narration now starts automatically when you open a supported lore book. To toggle that behavior:
+
+```text
+.vfrw autoplay
+.vfrw autoplay on
+.vfrw autoplay off
+```
+
+To lower other sound categories while narration plays:
+
+```text
+.vfrw ducking
+.vfrw ducking 50
+.vfrw ducking off
+```
+
+`.vfrw ducking 50` temporarily lowers entity, ambient, weather, and music volume levels by 50% while narration is playing, then restores the exact previous levels when narration stops, finishes, or the book closes.
+
+The normal Vintage Story `Sound` category is not ducked by default because VFRW narration currently plays through that same category. If you need to duck general sound effects too, set `DuckGeneralSoundCategory` to `true` in the client config.
+
 The command intentionally uses the normal Vintage Story sound pipeline, so the file should be Ogg Vorbis, not Ogg Opus.
+
+## Config
+
+Client settings are stored in:
+
+```text
+ModConfig/voicesfromtherustworld-client.json
+```
+
+Current settings:
+
+```text
+AutoPlayOnBookOpen = true
+NarrationVolume = 1.0
+OtherSoundDuckingPercent = 50.0
+DuckGeneralSoundCategory = false
+```
+
+If ConfigLib is installed and enabled, VFRW registers these client settings with ConfigLib as well. ConfigLib is optional; without it, the JSON config and `.vfrw` commands still work.
+
+## Replacing Audio Without Restarting
+
+For fast recording iteration, test from loose voice-pack files instead of a packaged zip. The launch profile should include the voice-pack folder as an extra mod path:
+
+```text
+--addModPath "E:\Path\To\Voices from the Rust World\voicepacks"
+```
+
+Then replace the `.ogg` file on disk and run:
+
+```text
+.vfrw stop
+.reload sounds
+.vfrw whinging
+```
+
+`.vfrw stop` stops the currently tracked narration sound. `.reload sounds` asks Vintage Story to reload sound assets. The next `.vfrw whinging` should use the replaced file.
+
+If you are testing from zipped mods in the `Mods` folder, replacing the source `.ogg` in this repository will not update the already-loaded zip. Repackage the voice pack or switch to loose-file testing while recording.
 
 ## Debugging With Books
 
@@ -59,6 +121,8 @@ Use the VFRW helper command for normal debugging:
 `.vfrw book <lorecode>` gives you one book containing all pieces for that lore entry.
 
 `.vfrw book <lorecode> <piece>` gives you one book containing only that one-based piece number.
+
+Open the spawned book to test automatic narration playback. Use `.vfrw stop` if you need to stop the clip before closing the book.
 
 The helper sends Vintage Story's `/giveitem` command for you, so your player still needs permission to use `/giveitem`. In a local creative/debug world this is usually fine.
 
@@ -218,5 +282,5 @@ Use this checklist when a voice pack does not work:
 3. Confirm the narrator JSON is under `assets/<voicepackdomain>/config/voicesfromtherustworld/narrators/`.
 4. Confirm the `sound` value uses your voice-pack domain and omits `.ogg`.
 5. Confirm the Ogg file exists under `assets/<voicepackdomain>/sounds/narration/<lorecode>/piece<number>.ogg`.
-6. Use `.vfrw book <lorecode> [piece]` to spawn the matching lore book and verify the lore code and piece number you are testing.
+6. Use `.vfrw book <lorecode> [piece]` to spawn the matching lore book, then open it to test automatic playback.
 7. If `.vfrw book` fails, try the raw `/giveitem` command from the Debugging With Books section.
