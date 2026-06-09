@@ -637,8 +637,8 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         currentNarrationDescription = $"{loreCode} piece {piece}";
         currentNarrationStartedFromBook = startedFromBook;
 
-        float narrationVolume = UpdateCurrentNarrationVolume();
         ApplySoundDucking();
+        float narrationVolume = UpdateCurrentNarrationVolume();
 
         sound.Start();
         StartNarrationStateWatcher();
@@ -723,7 +723,7 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         float narrationVolume = GetEffectiveNarrationVolume(currentNarratorPack, currentNarrationEntry);
         if (currentNarrationSound is not null && !currentNarrationSound.IsDisposed && !currentNarrationSound.HasStopped)
         {
-            currentNarrationSound.SetVolume(narrationVolume);
+            currentNarrationSound.SetVolume(narrationVolume * GetNarrationDuckingCompensation());
         }
 
         return narrationVolume;
@@ -831,14 +831,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
             return;
         }
 
-        duckedSoundLevels = VfrwSoundLevels.Capture(clientConfig.DuckGeneralSoundCategory);
+        duckedSoundLevels = VfrwSoundLevels.Capture();
 
-        float keepMultiplier = Math.Clamp(1.0f - (clientConfig.OtherSoundDuckingPercent / 100.0f), 0.0f, 1.0f);
-        if (duckedSoundLevels.DuckedGeneralSound)
-        {
-            ClientSettings.SoundLevel = ScaleSoundLevel(duckedSoundLevels.Sound, keepMultiplier);
-        }
-
+        float keepMultiplier = GetDuckingKeepMultiplier();
+        ClientSettings.SoundLevel = ScaleSoundLevel(duckedSoundLevels.Sound, keepMultiplier, keepAudible: true);
         ClientSettings.EntitySoundLevel = ScaleSoundLevel(duckedSoundLevels.Entity, keepMultiplier);
         ClientSettings.AmbientSoundLevel = ScaleSoundLevel(duckedSoundLevels.Ambient, keepMultiplier);
         ClientSettings.WeatherSoundLevel = ScaleSoundLevel(duckedSoundLevels.Weather, keepMultiplier);
@@ -855,11 +851,7 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
             return;
         }
 
-        if (previousLevels.DuckedGeneralSound)
-        {
-            ClientSettings.SoundLevel = previousLevels.Sound;
-        }
-
+        ClientSettings.SoundLevel = previousLevels.Sound;
         ClientSettings.EntitySoundLevel = previousLevels.Entity;
         ClientSettings.AmbientSoundLevel = previousLevels.Ambient;
         ClientSettings.WeatherSoundLevel = previousLevels.Weather;
@@ -894,11 +886,20 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
             return "Other-sound ducking is off.";
         }
 
-        string generalSoundNote = clientConfig.DuckGeneralSoundCategory
-            ? " General sound effects are included."
-            : " General sound effects are not included because narration uses that Vintage Story sound category.";
+        return $"Other-sound ducking is {FormatPercent(clientConfig.OtherSoundDuckingPercent)}%. Narration volume is compensated so it stays above ducked sounds.";
+    }
 
-        return $"Other-sound ducking is {FormatPercent(clientConfig.OtherSoundDuckingPercent)}%.{generalSoundNote}";
+    private float GetNarrationDuckingCompensation()
+    {
+        if (duckedSoundLevels is null || duckedSoundLevels.Sound <= 0 || ClientSettings.SoundLevel <= 0)
+            return 1.0f;
+
+        return duckedSoundLevels.Sound / (float)ClientSettings.SoundLevel;
+    }
+
+    private float GetDuckingKeepMultiplier()
+    {
+        return Math.Clamp(1.0f - (clientConfig.OtherSoundDuckingPercent / 100.0f), 0.0f, 1.0f);
     }
 
     private static int GetFirstBookPiece(ItemStack itemStack)
@@ -931,9 +932,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         return Math.Clamp(percent, 0.0f, MaxDuckingPercent);
     }
 
-    private static int ScaleSoundLevel(int level, float multiplier)
+    private static int ScaleSoundLevel(int level, float multiplier, bool keepAudible = false)
     {
-        return Math.Clamp((int)MathF.Round(level * multiplier), 0, 100);
+        int scaledLevel = Math.Clamp((int)MathF.Round(level * multiplier), 0, 100);
+        return keepAudible && level > 0 && scaledLevel == 0 ? 1 : scaledLevel;
     }
 
     private static bool TryParsePercent(string? value, out float percent)
@@ -1005,17 +1007,14 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
 
     private sealed class VfrwSoundLevels
     {
-        private VfrwSoundLevels(bool duckedGeneralSound)
+        private VfrwSoundLevels()
         {
-            DuckedGeneralSound = duckedGeneralSound;
             Sound = ClientSettings.SoundLevel;
             Entity = ClientSettings.EntitySoundLevel;
             Ambient = ClientSettings.AmbientSoundLevel;
             Weather = ClientSettings.WeatherSoundLevel;
             Music = ClientSettings.MusicLevel;
         }
-
-        public bool DuckedGeneralSound { get; }
 
         public int Sound { get; }
 
@@ -1027,9 +1026,9 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
 
         public int Music { get; }
 
-        public static VfrwSoundLevels Capture(bool duckedGeneralSound)
+        public static VfrwSoundLevels Capture()
         {
-            return new VfrwSoundLevels(duckedGeneralSound);
+            return new VfrwSoundLevels();
         }
     }
 }
@@ -1131,6 +1130,4 @@ public sealed class VfrwClientConfig
     public float NarrationVolume = 1.0f;
 
     public float OtherSoundDuckingPercent = 50.0f;
-
-    public bool DuckGeneralSoundCategory = false;
 }

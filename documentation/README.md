@@ -62,9 +62,9 @@ To lower other sound categories while narration plays:
 .vfrw ducking off
 ```
 
-`.vfrw ducking 50` temporarily lowers entity, ambient, weather, and music volume levels by 50% while narration is playing, then restores the exact previous levels when narration stops, finishes, or the book closes.
+`.vfrw ducking 50` temporarily lowers sound effects, entity, ambient, weather, and music volume levels by 50% while narration is playing, then restores the exact previous levels when narration stops, finishes, or the book closes.
 
-The normal Vintage Story `Sound` category is not ducked by default because VFRW narration currently plays through that same category. If you need to duck general sound effects too, set `DuckGeneralSoundCategory` to `true` in the client config.
+VFRW narration currently plays through the normal Vintage Story `Sound` category. While ducking is active, VFRW compensates the narration sound's own volume so narration stays above the ducked sound effects.
 
 The command intentionally uses the normal Vintage Story sound pipeline, so the file should be Ogg Vorbis, not Ogg Opus.
 
@@ -82,7 +82,6 @@ Current settings:
 AutoPlayOnBookOpen = true
 NarrationVolume = 1.0
 OtherSoundDuckingPercent = 50.0
-DuckGeneralSoundCategory = false
 ```
 
 If ConfigLib is installed and enabled, VFRW registers these client settings with ConfigLib as well. ConfigLib is optional; without it, the JSON config and `.vfrw` commands still work.
