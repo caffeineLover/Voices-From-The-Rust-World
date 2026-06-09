@@ -2,9 +2,9 @@
   "type": "code",
   "modid": "voicesfromtherustworld",
   "name": "Voices from the Rust World",
-  "authors": [ "Unknown" ],
+  "authors": [ "Ghaelen" ],
   "description": "Adds human-recorded narration support for Vintage Story lore books and scrolls.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "game": "1.22.3"
   }

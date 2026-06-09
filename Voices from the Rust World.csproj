@@ -12,6 +12,8 @@
     <OutputPath>bin\$(Configuration)\Mods\voicesfromtherustworld\</OutputPath>
     <VintageStoryInstall Condition="'$(VintageStoryInstall)' == ''">$(VINTAGE_STORY)</VintageStoryInstall>
     <VintageStoryApiDll>$(VintageStoryInstall)\VintagestoryAPI.dll</VintageStoryApiDll>
+    <VintageStoryLibDll>$(VintageStoryInstall)\VintagestoryLib.dll</VintageStoryLibDll>
+    <HarmonyDll>$(VintageStoryInstall)\Lib\0Harmony.dll</HarmonyDll>
   </PropertyGroup>
 
   <Target Name="ValidateVintageStoryApiReference" BeforeTargets="ResolveReferences">
@@ -19,11 +21,23 @@
            Text="VintageStoryInstall is not set. Set it in Directory.Build.props.user or pass /p:VintageStoryInstall=&quot;path\to\Vintage Story&quot;." />
     <Error Condition="!Exists('$(VintageStoryApiDll)')"
            Text="VintagestoryAPI.dll was not found at '$(VintageStoryApiDll)'. Set VintageStoryInstall to the game install folder that contains VintagestoryAPI.dll." />
+    <Error Condition="!Exists('$(VintageStoryLibDll)')"
+           Text="VintagestoryLib.dll was not found at '$(VintageStoryLibDll)'. Set VintageStoryInstall to the game install folder that contains VintagestoryLib.dll." />
+    <Error Condition="!Exists('$(HarmonyDll)')"
+           Text="0Harmony.dll was not found at '$(HarmonyDll)'. Set VintageStoryInstall to the game install folder that contains Lib\0Harmony.dll." />
   </Target>
 
   <ItemGroup>
     <Reference Include="VintagestoryAPI">
       <HintPath>$(VintageStoryApiDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="VintagestoryLib">
+      <HintPath>$(VintageStoryLibDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(HarmonyDll)</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
@@ -33,6 +47,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="modinfo.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LICENSE.md;COPYING;COPYING.LESSER;COPYING.CC-BY-NC-ND-4.0;AUTHORS.md;CREDITS.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

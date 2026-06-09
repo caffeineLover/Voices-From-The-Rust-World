@@ -2,6 +2,20 @@
 
 Vintage Story mod for human-recorded narration of lore books and scrolls.
 
+## License
+
+The framework/code mod, `voicesfromtherustworld`, is licensed under
+LGPLv3-or-later with an additional GPLv3 section 7(b) attribution preservation
+term. See `../LICENSE.md`, `../COPYING.LESSER`, and `../COPYING`.
+
+The bundled default voice pack, `vfrwdefaultvoices`, including bundled
+narration recordings, is licensed separately under CC BY-NC-ND 4.0 unless a
+file says otherwise. See `../COPYING.CC-BY-NC-ND-4.0` and
+`../voicepacks/vfrwdefaultvoices/LICENSE.md`.
+
+LGPLv3 permits forks and modified redistribution under its terms. It does not
+prohibit forks.
+
 ## Current Narration Clip
 
 Record the `Whinging` lore entry as Ogg Vorbis and place it here:
