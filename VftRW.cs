@@ -321,7 +321,7 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
             narratorPacks.Add(new NarratorPack(source, definition));
         }
 
-        api.Logger.Notification("Voices from the Rust World discovered {0} narrator pack(s).", narratorPacks.Count);
+        api.Logger.Notification($"Voices from the Rust World discovered {narratorPacks.Count} narrator pack(s).");
     }
 
 
@@ -350,7 +350,7 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
             loreAssets[asset.Code] = asset;
         }
 
-        api.Logger.Notification("Voices from the Rust World discovered {0} lore book(s).", loreAssets.Count);
+        api.Logger.Notification($"Voices from the Rust World discovered {loreAssets.Count} lore book(s).");
     }
 
 
