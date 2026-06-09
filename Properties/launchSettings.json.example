@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Story Forge Testing": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Path\\To\\StoryForge\\versions\\1.22.3\\Vintagestory.exe",
+      "workingDirectory": "C:\\Path\\To\\StoryForge\\versions\\1.22.3",
+      "commandLineArgs": "--dataPath \"C:\\Path\\To\\StoryForge\\installations\\testing\" --addModPath \"E:\\Path\\To\\Voices from the Rust World\\bin\\Debug\\Mods\""
+    }
+  }
+}

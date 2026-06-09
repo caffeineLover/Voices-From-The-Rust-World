@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="Directory.Build.props.user" Condition="Exists('Directory.Build.props.user')" />
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>VoicesFromTheRustWorld</RootNamespace>
+    <AssemblyName>VoicesFromTheRustWorld</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>bin\$(Configuration)\Mods\voicesfromtherustworld\</OutputPath>
+    <VintageStoryInstall Condition="'$(VintageStoryInstall)' == ''">$(VINTAGE_STORY)</VintageStoryInstall>
+    <VintageStoryApiDll>$(VintageStoryInstall)\VintagestoryAPI.dll</VintageStoryApiDll>
+  </PropertyGroup>
+
+  <Target Name="ValidateVintageStoryApiReference" BeforeTargets="ResolveReferences">
+    <Error Condition="'$(VintageStoryInstall)' == ''"
+           Text="VintageStoryInstall is not set. Set it in Directory.Build.props.user or pass /p:VintageStoryInstall=&quot;path\to\Vintage Story&quot;." />
+    <Error Condition="!Exists('$(VintageStoryApiDll)')"
+           Text="VintagestoryAPI.dll was not found at '$(VintageStoryApiDll)'. Set VintageStoryInstall to the game install folder that contains VintagestoryAPI.dll." />
+  </Target>
+
+  <ItemGroup>
+    <Reference Include="VintagestoryAPI">
+      <HintPath>$(VintageStoryApiDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="modinfo.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

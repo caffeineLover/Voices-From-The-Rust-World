@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- Copy this file to Directory.Build.props.user and point it at the game install folder used for development. -->
+    <VintageStoryInstall>E:\Path\To\VintageStory</VintageStoryInstall>
+  </PropertyGroup>
+</Project>
