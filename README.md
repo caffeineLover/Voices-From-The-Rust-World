@@ -38,12 +38,33 @@ Vintage Story uses two chat command prefixes:
 ```text
 .vfrw packs
 .vfrw whinging
+.vfrw book whinging
 /giveitem ...
 ```
 
 `.` commands are client commands. `/` commands are server commands.
 
-To give yourself the current `Whinging` test book, run this as one line in a test world:
+### Short Method
+
+Use the VFRW helper command for normal debugging:
+
+```text
+.vfrw books
+.vfrw book whinging
+.vfrw book whinging 1
+```
+
+`.vfrw books` lists known lore codes.
+
+`.vfrw book <lorecode>` gives you one book containing all pieces for that lore entry.
+
+`.vfrw book <lorecode> <piece>` gives you one book containing only that one-based piece number.
+
+The helper sends Vintage Story's `/giveitem` command for you, so your player still needs permission to use `/giveitem`. In a local creative/debug world this is usually fine.
+
+### Raw Method
+
+If the helper does not work, use the raw server command. To give yourself the current `Whinging` test book, run this as one line in a test world:
 
 ```text
 /giveitem game:lore-book-aged-orange 1 s[] {"discoveryCode":"whinging","chapterIds":[0],"textCodes":["lore-whinging-piece1"],"titleCode":"lore-whinging-title"}
@@ -59,6 +80,8 @@ chapterIds = zero-based chapter indexes, so piece1 is 0, piece2 is 1, and so on
 ```
 
 The voice-pack metadata uses one-based piece numbers (`piece: 1`, `piece: 2`). The vanilla book item NBT uses zero-based `chapterIds` (`0`, `1`). This mismatch is easy to trip over when debugging.
+
+The `.vfrw book` helper accepts one-based piece numbers to match voice-pack metadata, then converts them to zero-based `chapterIds` internally.
 
 ## Mod Split
 
@@ -195,4 +218,5 @@ Use this checklist when a voice pack does not work:
 3. Confirm the narrator JSON is under `assets/<voicepackdomain>/config/voicesfromtherustworld/narrators/`.
 4. Confirm the `sound` value uses your voice-pack domain and omits `.ogg`.
 5. Confirm the Ogg file exists under `assets/<voicepackdomain>/sounds/narration/<lorecode>/piece<number>.ogg`.
-6. Use `/giveitem` to spawn the matching lore book and verify the lore code and piece number you are testing.
+6. Use `.vfrw book <lorecode> [piece]` to spawn the matching lore book and verify the lore code and piece number you are testing.
+7. If `.vfrw book` fails, try the raw `/giveitem` command from the Debugging With Books section.
