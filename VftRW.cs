@@ -82,10 +82,6 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
             .IgnoreAdditionalArgs()
             .HandleWith(OnPlayNarrationCommand)
             .EndSubCommand()
-            .BeginSubCommand("whinging")
-            .WithDescription("Deprecated alias for .vfrw play whinging")
-            .HandleWith(_ => StartNarrationCommand("whinging", 1))
-            .EndSubCommand()
             .BeginSubCommand("stop")
             .WithDescription("Stop the currently playing narration")
             .HandleWith(OnStopCommand)
@@ -269,28 +265,25 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         BlockSelection _blockSel,
         EntitySelection _entitySel,
         bool firstEvent,
-        ref EnumHandHandling handling
+        ref EnumHandHandling _handling
     )
     {
-        activeClientSystem?.TryAutoPlayBookNarration(slot, byEntity, firstEvent, handling);
+        activeClientSystem?.TryAutoPlayBookNarration(slot, byEntity, firstEvent);
     }
 
 
 
 
 
-    private void TryAutoPlayBookNarration(ItemSlot slot, EntityAgent byEntity, bool firstEvent, EnumHandHandling handling)
+    private void TryAutoPlayBookNarration(ItemSlot slot, EntityAgent byEntity, bool firstEvent)
     {
-        if (capi is null || !clientConfig.AutoPlayOnBookOpen || !firstEvent || handling != EnumHandHandling.PreventDefault)
+        if (capi is null || !clientConfig.AutoPlayOnBookOpen || !firstEvent)
             return;
 
         if (slot.Itemstack?.Attributes is null)
             return;
 
         if (capi.World.Player?.Entity is not null && byEntity.EntityId != capi.World.Player.Entity.EntityId)
-            return;
-
-        if (!slot.Itemstack.Attributes.HasAttribute("text") && !slot.Itemstack.Attributes.HasAttribute("textCodes"))
             return;
 
         string? loreCode = slot.Itemstack.Attributes.GetString("discoveryCode", null);

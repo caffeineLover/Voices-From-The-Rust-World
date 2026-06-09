@@ -10,7 +10,7 @@ term. See `../LICENSE.md`, `../COPYING.LESSER`, and `../COPYING`.
 
 The bundled default voice pack, `vfrwdefaultvoices`, including bundled
 narration recordings, is licensed separately under CC BY-NC-ND 4.0 unless a
-file says otherwise. See `../COPYING.CC-BY-NC-ND-4.0` and
+file says otherwise. See `../COPYING-CC-BY-NC-ND-4.0.txt` and
 `../voicepacks/vfrwdefaultvoices/LICENSE.md`.
 
 LGPLv3 permits forks and modified redistribution under its terms. It does not
@@ -27,12 +27,15 @@ voicepacks/vfrwdefaultvoices/assets/vfrwdefaultvoices/sounds/narration/whinging/
 In game, run:
 
 ```text
-.vfrw play whinging
-.vfrw whinging
+.vfrw play <lorecode>
 .vfrw stop
 ```
 
-`.vfrw whinging` is a backwards-compatible alias for `.vfrw play whinging`.
+For example, to play the `Whinging` lore narration:
+
+```text
+.vfrw play whinging
+```
 
 To list discovered narrator packs, run:
 
@@ -65,9 +68,9 @@ To lower other sound categories while narration plays:
 .vfrw ducking off
 ```
 
-`.vfrw ducking 50` temporarily lowers sound effects, entity, ambient, weather, and music volume levels by 50% while narration is playing, then restores the exact previous levels when narration stops, finishes, or the book closes.
+`.vfrw ducking 50` temporarily lowers effects, entity, ambient, weather, and music volume levels by 50% while narration is playing, then restores the exact previous levels when narration stops, finishes, or the book closes.
 
-VFRW narration currently plays through the normal Vintage Story `Sound` category. While ducking is active, VFRW compensates the narration sound's own volume so narration stays above the ducked sound effects.
+VFRW narration currently plays through Vintage Story's `Effects Sound level` category. While ducking is active, VFRW compensates the narration sound's own volume so narration stays above the ducked effects.
 
 The command intentionally uses the normal Vintage Story sound pipeline, so the file should be Ogg Vorbis, not Ogg Opus.
 

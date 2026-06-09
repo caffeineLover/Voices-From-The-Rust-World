@@ -33,7 +33,7 @@ bundled narration recordings, is licensed under Creative Commons
 Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0),
 unless a file says otherwise.
 
-See `COPYING.CC-BY-NC-ND-4.0` for the CC BY-NC-ND 4.0 legal text.
+See `COPYING-CC-BY-NC-ND-4.0.txt` for the CC BY-NC-ND 4.0 legal text.
 
 You may share the bundled default voice pack unchanged for non-commercial
 purposes with attribution. You may not distribute modified, remixed, or

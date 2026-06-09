@@ -18,7 +18,7 @@ GPLv3 section 7(b) attribution preservation term. See [LICENSE.md](LICENSE.md),
 
 The bundled default voice pack and bundled narration recordings are licensed
 under CC BY-NC-ND 4.0 unless a file says otherwise. See
-[COPYING.CC-BY-NC-ND-4.0](COPYING.CC-BY-NC-ND-4.0) and
+[COPYING-CC-BY-NC-ND-4.0.txt](COPYING-CC-BY-NC-ND-4.0.txt) and
 [voicepacks/vfrwdefaultvoices/LICENSE.md](voicepacks/vfrwdefaultvoices/LICENSE.md).
 
 LGPLv3 permits forks and modified redistribution under its terms. It does not
