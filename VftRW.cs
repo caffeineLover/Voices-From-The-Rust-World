@@ -82,6 +82,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
             .IgnoreAdditionalArgs()
             .HandleWith(OnPlayNarrationCommand)
             .EndSubCommand()
+            .BeginSubCommand("whinging")
+            .WithDescription("Deprecated alias for .vfrw play whinging")
+            .HandleWith(_ => StartNarrationCommand("whinging", 1))
+            .EndSubCommand()
             .BeginSubCommand("stop")
             .WithDescription("Stop the currently playing narration")
             .HandleWith(OnStopCommand)
@@ -295,7 +299,7 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         
 
         int piece = GetFirstBookPiece(slot.Itemstack);
-        if (!TryStartNarration(loreCode, piece, true, out string message) && !message.StartsWith("No narrator pack", StringComparison.Ordinal))
+        if (TryStartNarration(loreCode, piece, true, out string message) || !message.StartsWith("No narrator pack", StringComparison.Ordinal))
             capi.ShowChatMessage(message);
     }
 
@@ -477,7 +481,12 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         if (piece < 1 || piece > loreAsset.Pieces.Length)
             return TextCommandResult.Error($"Piece must be between 1 and {loreAsset.Pieces.Length} for lore code '{loreAsset.Code}'.");
 
-        return TryStartNarration(loreAsset.Code, piece, false, out string message)
+        return StartNarrationCommand(loreAsset.Code, piece);
+    }
+
+    private TextCommandResult StartNarrationCommand(string loreCode, int piece)
+    {
+        return TryStartNarration(loreCode, piece, false, out string message)
             ? TextCommandResult.Success(message)
             : TextCommandResult.Error(message);
     }
@@ -721,7 +730,7 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
     private float UpdateCurrentNarrationVolume()
     {
         float narrationVolume = GetEffectiveNarrationVolume(currentNarratorPack, currentNarrationEntry);
-        if (currentNarrationSound is not null && !currentNarrationSound.IsDisposed && !currentNarrationSound.HasStopped)
+        if (currentNarrationSound is not null && !currentNarrationSound.IsDisposed)
         {
             currentNarrationSound.SetVolume(narrationVolume * GetNarrationDuckingCompensation());
         }

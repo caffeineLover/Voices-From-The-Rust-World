@@ -28,8 +28,11 @@ In game, run:
 
 ```text
 .vfrw play whinging
+.vfrw whinging
 .vfrw stop
 ```
+
+`.vfrw whinging` is a backwards-compatible alias for `.vfrw play whinging`.
 
 To list discovered narrator packs, run:
 
