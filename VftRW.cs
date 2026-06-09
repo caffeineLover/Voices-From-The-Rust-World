@@ -498,6 +498,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         return TextCommandResult.Success($"Stopped {stoppedDescription}.");
     }
 
+    
+
+
+
     private TextCommandResult OnVolumeCommand(TextCommandCallingArgs args)
     {
         if (capi is null)
@@ -522,6 +526,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
 
         return TextCommandResult.Success($"Narration volume set to {FormatVolume(clientConfig.NarrationVolume)}x.");
     }
+
+
+
+    
 
     private TextCommandResult OnDuckingCommand(TextCommandCallingArgs args)
     {
@@ -559,6 +567,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         return TextCommandResult.Success(GetDuckingStatus());
     }
 
+
+
+
+
     private TextCommandResult OnAutoPlayCommand(TextCommandCallingArgs args)
     {
         if (capi is null)
@@ -582,6 +594,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
 
         return TextCommandResult.Success($"Book-open autoplay is now {(clientConfig.AutoPlayOnBookOpen ? "on" : "off")}.");
     }
+
+
+
+
 
     private bool TryStartNarration(string loreCode, int piece, bool startedFromBook, out string message)
     {
@@ -698,6 +714,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         RestoreSoundDucking();
     }
 
+
+
+
+
     private float UpdateCurrentNarrationVolume()
     {
         float narrationVolume = GetEffectiveNarrationVolume(currentNarratorPack, currentNarrationEntry);
@@ -709,6 +729,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         return narrationVolume;
     }
 
+
+
+
+
     private void StartNarrationStateWatcher()
     {
         if (capi is null || narrationStateWatcherId != 0)
@@ -718,6 +742,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
 
         narrationStateWatcherId = capi.Event.RegisterGameTickListener(OnNarrationStateTick, WatcherIntervalMs);
     }
+
+
+
+
 
     private void StopNarrationStateWatcher()
     {
@@ -739,6 +767,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         }
     }
 
+
+
+
+
     private void StartBookCloseWatcher()
     {
         if (capi is null || bookCloseWatcherId != 0)
@@ -748,6 +780,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
 
         bookCloseWatcherId = capi.Event.RegisterGameTickListener(OnBookCloseTick, WatcherIntervalMs);
     }
+
+
+
+
 
     private void StopBookCloseWatcher()
     {
@@ -760,6 +796,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         capi.Event.UnregisterGameTickListener(bookCloseWatcherId);
         bookCloseWatcherId = 0;
     }
+
+
+
+
 
     private void OnBookCloseTick(float dt)
     {
@@ -779,6 +819,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
             StopCurrentNarration();
         }
     }
+
+
+
+
 
     private void ApplySoundDucking()
     {
@@ -1027,6 +1071,12 @@ public sealed class NarratorPack
     public NarratorPackDefinition Definition { get; }
 }
 
+
+
+
+
+// Instantiated by Vintage Story asset deserialization via api.Assets.GetMany<T>().
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class NarratorPackDefinition
 {
     private List<NarrationEntryDefinition> entries = [];
@@ -1053,6 +1103,12 @@ public sealed class NarratorPackDefinition
     }
 }
 
+
+
+
+
+// Instantiated by Vintage Story asset deserialization as part of NarratorPackDefinition.
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class NarrationEntryDefinition
 {
     public string LoreCode { get; set; } = "";
@@ -1063,6 +1119,10 @@ public sealed class NarrationEntryDefinition
 
     public float Volume { get; set; } = 1.0f;
 }
+
+
+
+
 
 public sealed class VfrwClientConfig
 {
