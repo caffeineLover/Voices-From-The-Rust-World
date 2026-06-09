@@ -423,7 +423,7 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
                 if (pieceNumber < 1 || pieceNumber > loreAsset.Pieces.Length)
                     return TextCommandResult.Error($"Piece must be between 1 and {loreAsset.Pieces.Length} for lore code '{loreAsset.Code}'.");
 
-                chapterIds = new List<int> { pieceNumber - 1 };
+                chapterIds = [pieceNumber - 1];
             }
             else
             {
