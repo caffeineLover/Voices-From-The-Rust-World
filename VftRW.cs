@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json;
 using HarmonyLib;
@@ -249,6 +250,10 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         }
     }
 
+
+
+
+
     private static void AfterBookHeldInteractStart(
         ItemSlot slot,
         EntityAgent byEntity,
@@ -261,41 +266,40 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         activeClientSystem?.TryAutoPlayBookNarration(slot, byEntity, firstEvent, handling);
     }
 
+
+
+
+
     private void TryAutoPlayBookNarration(ItemSlot slot, EntityAgent byEntity, bool firstEvent, EnumHandHandling handling)
     {
         if (capi is null || !clientConfig.AutoPlayOnBookOpen || !firstEvent || handling != EnumHandHandling.PreventDefault)
-        {
             return;
-        }
 
         if (slot.Itemstack?.Attributes is null)
-        {
             return;
-        }
 
         if (capi.World.Player?.Entity is not null && byEntity.EntityId != capi.World.Player.Entity.EntityId)
-        {
             return;
-        }
 
         if (!slot.Itemstack.Attributes.HasAttribute("text") && !slot.Itemstack.Attributes.HasAttribute("textCodes"))
-        {
             return;
-        }
 
         string? loreCode = slot.Itemstack.Attributes.GetString("discoveryCode", null);
         if (string.IsNullOrWhiteSpace(loreCode))
-        {
             return;
-        }
+        
 
         int piece = GetFirstBookPiece(slot.Itemstack);
         if (!TryStartNarration(loreCode, piece, true, out string message) && !message.StartsWith("No narrator pack", StringComparison.Ordinal))
-        {
             capi.ShowChatMessage(message);
-        }
     }
 
+
+
+
+
+    // Discovers narrator-pack metadata from loaded assets and keeps valid packs in memory.
+	// Each pack defines which lore pieces it can narrate and which sound assets to play.
     private void LoadNarratorPacks(ICoreAPI api)
     {
         narratorPacks.Clear();
@@ -314,13 +318,17 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
                 continue;
             }
 
-            definition.Entries ??= new List<NarrationEntryDefinition>();
             narratorPacks.Add(new NarratorPack(source, definition));
         }
 
         api.Logger.Notification("Voices from the Rust World discovered {0} narrator pack(s).", narratorPacks.Count);
     }
 
+
+
+
+	// Discovers Vintage Story lore-book metadata from loaded assets and indexes it by lore code.
+	// This lets commands and autoplay validate lore entries and map piece numbers to book text.
     private void LoadLoreAssets(ICoreAPI api)
     {
         loreAssets.Clear();
@@ -339,34 +347,41 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
                 continue;
             }
 
-            asset.Pieces ??= Array.Empty<string>();
             loreAssets[asset.Code] = asset;
         }
 
         api.Logger.Notification("Voices from the Rust World discovered {0} lore book(s).", loreAssets.Count);
     }
 
+
+
+
+
     private TextCommandResult OnListPacksCommand(TextCommandCallingArgs args)
     {
         if (narratorPacks.Count == 0)
-        {
             return TextCommandResult.Success("No narrator packs discovered.");
-        }
 
         string packs = string.Join(", ", narratorPacks.Select(pack => $"{pack.Definition.Name} ({pack.Definition.Code})"));
         return TextCommandResult.Success($"Narrator packs: {packs}");
     }
 
+
+
+
+
     private TextCommandResult OnListBooksCommand(TextCommandCallingArgs args)
     {
         if (loreAssets.Count == 0)
-        {
             return TextCommandResult.Success("No lore books discovered.");
-        }
 
         string loreCodes = string.Join(", ", loreAssets.Values.OrderBy(asset => asset.Code).Select(asset => asset.Code));
         return TextCommandResult.Success($"Lore books: {loreCodes}");
     }
+
+
+
+
 
     private TextCommandResult OnBookCommand(TextCommandCallingArgs args)
     {
@@ -406,9 +421,7 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
             else if (int.TryParse(pieceArg, NumberStyles.None, CultureInfo.InvariantCulture, out int pieceNumber))
             {
                 if (pieceNumber < 1 || pieceNumber > loreAsset.Pieces.Length)
-                {
                     return TextCommandResult.Error($"Piece must be between 1 and {loreAsset.Pieces.Length} for lore code '{loreAsset.Code}'.");
-                }
 
                 chapterIds = new List<int> { pieceNumber - 1 };
             }
@@ -428,38 +441,36 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         return TextCommandResult.Success($"Sent /giveitem for lore '{loreAsset.Code}' ({pieceDescription}). Requires permission to use /giveitem.");
     }
 
+
+
+    
+    
+    // Handles ".vfrw play <lorecode> [piece]":  Validate the requested lore entry/piece, start playback, then return
+	// the appropriate chat command result.
     private TextCommandResult OnPlayNarrationCommand(TextCommandCallingArgs args)
     {
         string? loreCode = args.RawArgs.PopWord(null);
         if (string.IsNullOrWhiteSpace(loreCode))
-        {
             return TextCommandResult.Error("Usage: .vfrw play <lorecode> [piece]. Example: .vfrw play whinging 1");
-        }
 
         if (!loreAssets.TryGetValue(loreCode, out VfrwLoreAsset? loreAsset))
-        {
             return TextCommandResult.Error($"Unknown lore code '{loreCode}'. Run .vfrw books to list known lore codes.");
-        }
 
         if (loreAsset.Pieces.Length == 0)
-        {
             return TextCommandResult.Error($"Lore code '{loreAsset.Code}' has no pieces.");
-        }
 
         int piece = 1;
         if (args.RawArgs.Length != 0)
         {
             string? pieceArg = args.RawArgs.PopWord(null);
             if (!int.TryParse(pieceArg, NumberStyles.None, CultureInfo.InvariantCulture, out piece))
-            {
                 return TextCommandResult.Error("Piece must be a one-based number. Example: .vfrw play whinging 1");
-            }
         }
 
+        // Ensure that piece is between 1 and the number of pieces (inclusive) for that bit of lore.  Some lore only has
+        // one piece, like Whinging.  Some lore have multiple pieces.
         if (piece < 1 || piece > loreAsset.Pieces.Length)
-        {
             return TextCommandResult.Error($"Piece must be between 1 and {loreAsset.Pieces.Length} for lore code '{loreAsset.Code}'.");
-        }
 
         return TryStartNarration(loreAsset.Code, piece, false, out string message)
             ? TextCommandResult.Success(message)
@@ -976,11 +987,18 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
 
 public sealed class VfrwLoreAsset
 {
+    private string[] pieces = Array.Empty<string>();
+
     public string Code { get; set; } = "";
 
     public string Title { get; set; } = "";
 
-    public string[] Pieces { get; set; } = Array.Empty<string>();
+    [AllowNull]
+    public string[] Pieces
+    {
+        get => pieces;
+        set => pieces = value ?? Array.Empty<string>();
+    }
 
     public string Category { get; set; } = "";
 }
@@ -1000,6 +1018,8 @@ public sealed class NarratorPack
 
 public sealed class NarratorPackDefinition
 {
+    private List<NarrationEntryDefinition> entries = new();
+
     public string Code { get; set; } = "";
 
     public string Name { get; set; } = "";
@@ -1014,7 +1034,12 @@ public sealed class NarratorPackDefinition
 
     public float Volume { get; set; } = 1.0f;
 
-    public List<NarrationEntryDefinition> Entries { get; set; } = new();
+    [AllowNull]
+    public List<NarrationEntryDefinition> Entries
+    {
+        get => entries;
+        set => entries = value ?? new List<NarrationEntryDefinition>();
+    }
 }
 
 public sealed class NarrationEntryDefinition
