@@ -162,15 +162,14 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
 
             MethodInfo? registerMethod = configLib.GetType().GetMethod(
                 "RegisterCustomManagedConfig",
-                new[]
-                {
+                [
                     typeof(string),
                     typeof(object),
                     typeof(string),
                     typeof(Action),
                     typeof(Action<string>),
                     typeof(Action)
-                }
+                ]
             );
 
             if (registerMethod is null)
@@ -222,15 +221,14 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
             MethodInfo? targetMethod = AccessTools.Method(
                 itemBookType,
                 "OnHeldInteractStart",
-                new[]
-                {
+                [
                     typeof(ItemSlot),
                     typeof(EntityAgent),
                     typeof(BlockSelection),
                     typeof(EntitySelection),
                     typeof(bool),
                     typeof(EnumHandHandling).MakeByRefType()
-                }
+                ]
             );
 
             MethodInfo? postfixMethod = AccessTools.Method(typeof(VoicesFromTheRustWorldModSystem), nameof(AfterBookHeldInteractStart));
