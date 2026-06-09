@@ -218,36 +218,19 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
     {
         try
         {
-            Type? itemBookType = AccessTools.TypeByName("Vintagestory.GameContent.ItemBook");
-            if (itemBookType is null)
-            {
-                api.Logger.Warning("Could not find Vintagestory.GameContent.ItemBook. Book-open narration will be disabled.");
-                return;
-            }
-
-            MethodInfo? targetMethod = AccessTools.Method(
-                itemBookType,
-                "OnHeldInteractStart",
-                [
-                    typeof(ItemSlot),
-                    typeof(EntityAgent),
-                    typeof(BlockSelection),
-                    typeof(EntitySelection),
-                    typeof(bool),
-                    typeof(EnumHandHandling).MakeByRefType()
-                ]
-            );
-
-            MethodInfo? postfixMethod = AccessTools.Method(typeof(VoicesFromTheRustWorldModSystem), nameof(AfterBookHeldInteractStart));
-            if (targetMethod is null || postfixMethod is null)
-            {
-                api.Logger.Warning("Could not patch ItemBook.OnHeldInteractStart. Book-open narration will be disabled.");
-                return;
-            }
-
             harmony = new Harmony(HarmonyId);
-            harmony.Patch(targetMethod, postfix: new HarmonyMethod(postfixMethod));
-            api.Logger.Notification("Voices from the Rust World enabled book-open narration hook.");
+
+            int patchedMethodCount = 0;
+            patchedMethodCount += TryPatchBookOpenMethod(api, "Vintagestory.GameContent.ItemBook") ? 1 : 0;
+            patchedMethodCount += TryPatchBookOpenMethod(api, "Vintagestory.GameContent.ItemRandomLore") ? 1 : 0;
+
+            if (patchedMethodCount == 0)
+            {
+                api.Logger.Warning("Could not patch any Vintage Story book interaction methods. Book-open narration will be disabled.");
+                return;
+            }
+
+            api.Logger.Notification($"Voices from the Rust World enabled book-open narration hook on {patchedMethodCount} method(s).");
         }
         catch (Exception exception)
         {
@@ -255,20 +238,50 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         }
     }
 
+    private bool TryPatchBookOpenMethod(ICoreClientAPI api, string typeName)
+    {
+        Type? bookType = AccessTools.TypeByName(typeName);
+        if (bookType is null)
+        {
+            api.Logger.Warning("Could not find {0}.", typeName);
+            return false;
+        }
+
+        MethodInfo? targetMethod = AccessTools.Method(
+            bookType,
+            "OnHeldInteractStart",
+            [
+                typeof(ItemSlot),
+                typeof(EntityAgent),
+                typeof(BlockSelection),
+                typeof(EntitySelection),
+                typeof(bool),
+                typeof(EnumHandHandling).MakeByRefType()
+            ]
+        );
+
+        MethodInfo? postfixMethod = AccessTools.Method(typeof(VoicesFromTheRustWorldModSystem), nameof(AfterBookHeldInteractStart));
+        if (targetMethod is null || postfixMethod is null || harmony is null)
+        {
+            api.Logger.Warning("Could not patch {0}.OnHeldInteractStart.", typeName);
+            return false;
+        }
+
+        harmony.Patch(targetMethod, postfix: new HarmonyMethod(postfixMethod));
+        return true;
+    }
+
 
 
 
 
     private static void AfterBookHeldInteractStart(
-        ItemSlot slot,
-        EntityAgent byEntity,
-        BlockSelection _blockSel,
-        EntitySelection _entitySel,
-        bool firstEvent,
-        ref EnumHandHandling _handling
+        ItemSlot __0,
+        EntityAgent __1,
+        bool __4
     )
     {
-        activeClientSystem?.TryAutoPlayBookNarration(slot, byEntity, firstEvent);
+        activeClientSystem?.TryAutoPlayBookNarration(__0, __1, __4);
     }
 
 
