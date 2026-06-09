@@ -1,0 +1,16 @@
+{
+  "code": "default",
+  "name": "Voices from the Rust World - Default Voices",
+  "description": "Default narration bundled with Voices from the Rust World.",
+  "authors": [ "Unknown" ],
+  "language": "en",
+  "format": "ogg-vorbis",
+  "volume": 1.5,
+  "entries": [
+    {
+      "loreCode": "whinging",
+      "piece": 1,
+      "sound": "vfrwdefaultvoices:sounds/narration/whinging/piece1"
+    }
+  ]
+}

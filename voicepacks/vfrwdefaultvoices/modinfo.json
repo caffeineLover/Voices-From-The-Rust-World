@@ -1,0 +1,12 @@
+{
+  "type": "content",
+  "modid": "vfrwdefaultvoices",
+  "name": "Voices from the Rust World - Default Voices",
+  "authors": [ "Unknown" ],
+  "description": "Default human-recorded narration pack for Voices from the Rust World.",
+  "version": "0.0.1",
+  "dependencies": {
+    "game": "1.22.3",
+    "voicesfromtherustworld": "0.0.1"
+  }
+}
