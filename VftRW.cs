@@ -75,9 +75,11 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
             .IgnoreAdditionalArgs()
             .HandleWith(OnBookCommand)
             .EndSubCommand()
-            .BeginSubCommand("whinging")
-            .WithDescription("Play the Whinging narration clip")
-            .HandleWith(OnWhingingNarrationCommand)
+            .BeginSubCommand("play")
+            .WithDescription("Play a narration clip by lore code")
+            .WithExamples(".vfrw play whinging", ".vfrw play whinging 1")
+            .IgnoreAdditionalArgs()
+            .HandleWith(OnPlayNarrationCommand)
             .EndSubCommand()
             .BeginSubCommand("stop")
             .WithDescription("Stop the currently playing narration")
@@ -426,9 +428,40 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
         return TextCommandResult.Success($"Sent /giveitem for lore '{loreAsset.Code}' ({pieceDescription}). Requires permission to use /giveitem.");
     }
 
-    private TextCommandResult OnWhingingNarrationCommand(TextCommandCallingArgs args)
+    private TextCommandResult OnPlayNarrationCommand(TextCommandCallingArgs args)
     {
-        return TryStartNarration("whinging", 1, false, out string message)
+        string? loreCode = args.RawArgs.PopWord(null);
+        if (string.IsNullOrWhiteSpace(loreCode))
+        {
+            return TextCommandResult.Error("Usage: .vfrw play <lorecode> [piece]. Example: .vfrw play whinging 1");
+        }
+
+        if (!loreAssets.TryGetValue(loreCode, out VfrwLoreAsset? loreAsset))
+        {
+            return TextCommandResult.Error($"Unknown lore code '{loreCode}'. Run .vfrw books to list known lore codes.");
+        }
+
+        if (loreAsset.Pieces.Length == 0)
+        {
+            return TextCommandResult.Error($"Lore code '{loreAsset.Code}' has no pieces.");
+        }
+
+        int piece = 1;
+        if (args.RawArgs.Length != 0)
+        {
+            string? pieceArg = args.RawArgs.PopWord(null);
+            if (!int.TryParse(pieceArg, NumberStyles.None, CultureInfo.InvariantCulture, out piece))
+            {
+                return TextCommandResult.Error("Piece must be a one-based number. Example: .vfrw play whinging 1");
+            }
+        }
+
+        if (piece < 1 || piece > loreAsset.Pieces.Length)
+        {
+            return TextCommandResult.Error($"Piece must be between 1 and {loreAsset.Pieces.Length} for lore code '{loreAsset.Code}'.");
+        }
+
+        return TryStartNarration(loreAsset.Code, piece, false, out string message)
             ? TextCommandResult.Success(message)
             : TextCommandResult.Error(message);
     }

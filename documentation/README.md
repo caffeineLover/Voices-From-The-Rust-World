@@ -27,7 +27,7 @@ voicepacks/vfrwdefaultvoices/assets/vfrwdefaultvoices/sounds/narration/whinging/
 In game, run:
 
 ```text
-.vfrw whinging
+.vfrw play whinging
 .vfrw stop
 ```
 
@@ -100,10 +100,10 @@ Then replace the `.ogg` file on disk and run:
 ```text
 .vfrw stop
 .reload sounds
-.vfrw whinging
+.vfrw play whinging
 ```
 
-`.vfrw stop` stops the currently tracked narration sound. `.reload sounds` asks Vintage Story to reload sound assets. The next `.vfrw whinging` should use the replaced file.
+`.vfrw stop` stops the currently tracked narration sound. `.reload sounds` asks Vintage Story to reload sound assets. The next `.vfrw play whinging` should use the replaced file.
 
 If you are testing from zipped mods in the `Mods` folder, replacing the source `.ogg` in this repository will not update the already-loaded zip. Repackage the voice pack or switch to loose-file testing while recording.
 
@@ -113,7 +113,7 @@ Vintage Story uses two chat command prefixes:
 
 ```text
 .vfrw packs
-.vfrw whinging
+.vfrw play whinging
 .vfrw book whinging
 /giveitem ...
 ```
