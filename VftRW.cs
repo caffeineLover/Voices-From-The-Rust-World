@@ -990,9 +990,15 @@ public sealed class VoicesFromTheRustWorldModSystem : ModSystem
     }
 }
 
+
+
+
+
+// Instantiated by Vintage Story asset deserialization via api.Assets.GetMany<T>().
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class VfrwLoreAsset
 {
-    private string[] pieces = Array.Empty<string>();
+    private string[] pieces = [];
 
     public string Code { get; set; } = "";
 
@@ -1002,7 +1008,7 @@ public sealed class VfrwLoreAsset
     public string[] Pieces
     {
         get => pieces;
-        set => pieces = value ?? Array.Empty<string>();
+        set => pieces = value ?? [];
     }
 
     public string Category { get; set; } = "";
@@ -1023,7 +1029,7 @@ public sealed class NarratorPack
 
 public sealed class NarratorPackDefinition
 {
-    private List<NarrationEntryDefinition> entries = new();
+    private List<NarrationEntryDefinition> entries = [];
 
     public string Code { get; set; } = "";
 
@@ -1031,7 +1037,7 @@ public sealed class NarratorPackDefinition
 
     public string Description { get; set; } = "";
 
-    public string[] Authors { get; set; } = Array.Empty<string>();
+    public string[] Authors { get; set; } = [];
 
     public string Language { get; set; } = "en";
 
@@ -1043,7 +1049,7 @@ public sealed class NarratorPackDefinition
     public List<NarrationEntryDefinition> Entries
     {
         get => entries;
-        set => entries = value ?? new List<NarrationEntryDefinition>();
+        set => entries = value ?? [];
     }
 }
 
