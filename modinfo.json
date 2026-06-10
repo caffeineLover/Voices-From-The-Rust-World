@@ -4,7 +4,7 @@
   "name": "Voices from the Rust World",
   "authors": [ "Ghaelen" ],
   "description": "Adds human-recorded narration support for Vintage Story lore books and scrolls.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "game": "1.22.3"
   }
