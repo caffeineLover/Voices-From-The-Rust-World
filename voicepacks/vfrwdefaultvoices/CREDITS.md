@@ -7,6 +7,8 @@ Voices from the Rust World - Default Voices (`vfrwdefaultvoices`)
 ## Voice Contributors
 
 - Ghaelen: `assets/vfrwdefaultvoices/sounds/narration/whinging/piece1.ogg`
+- Ghaelen: `assets/vfrwdefaultvoices/sounds/narration/return/piece1.ogg`
+- Ghaelen: `assets/vfrwdefaultvoices/sounds/narration/return/piece2.ogg`
 
 ## Attribution Rules
 

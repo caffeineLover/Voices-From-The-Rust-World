@@ -15,6 +15,8 @@ Voice pack: `vfrwdefaultvoices`
 Voice contributors:
 
 - Ghaelen: `whinging/piece1.ogg`
+- Ghaelen: `return/piece1.ogg`
+- Ghaelen: `return/piece2.ogg`
 
 ## Attribution Rules
 

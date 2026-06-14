@@ -4,7 +4,7 @@
   "name": "Voices from the Rust World - Default Voices",
   "authors": [ "Ghaelen" ],
   "description": "Default human-recorded narration pack for Voices from the Rust World.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "dependencies": {
     "game": "1.22.3",
     "voicesfromtherustworld": "0.0.3"

@@ -11,6 +11,16 @@
       "loreCode": "whinging",
       "piece": 1,
       "sound": "vfrwdefaultvoices:sounds/narration/whinging/piece1"
+    },
+    {
+      "loreCode": "return",
+      "piece": 1,
+      "sound": "vfrwdefaultvoices:sounds/narration/return/piece1"
+    },
+    {
+      "loreCode": "return",
+      "piece": 2,
+      "sound": "vfrwdefaultvoices:sounds/narration/return/piece2"
     }
   ]
 }
